@@ -71,7 +71,7 @@ function App() {
   return (
     <div className="container">
       <header>
-        <h1>Todo App (3)</h1>
+        <h1>Todo App</h1>
       </header>
       <main>
         <div style={{ display: "flex", alignItems: "start" }}>
