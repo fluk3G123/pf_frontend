@@ -46,8 +46,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # - name: Send Post Request
-      #   uses: fjogeleit/http-request-action@v1
-      #   with:
-      #     url: "https://ieadmin.eng.cmu.ac.th/hooks/redeploy-iedoc"
-      #     method: "GET"
+      - name: Send Request
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: "https://fs-webhook.iecmu.com/hooks/nr"
+          method: "GET"
