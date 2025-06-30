@@ -22,6 +22,13 @@ jobs:
       attestations: write
       id-token: write
     steps:
+      - name: Discord notification (start)
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has started redeplyment."
+      
       - name: Check out the repo
         uses: actions/checkout@v4
 
@@ -52,7 +59,7 @@ jobs:
           url: "https://fs-webhook.iecmu.com/hooks/nr"
           method: "GET"
 
-      - name: Discord notification
+      - name: Discord notification (finish)
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
