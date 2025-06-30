@@ -10,7 +10,7 @@ on:
   #     - "docs/**"
   # pull_request:
   #   branches: ["main", "master"]
-  # workflow_dispatch: # Allow manual triggering
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
   push_to_registry:
