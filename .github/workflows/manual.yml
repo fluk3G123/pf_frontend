@@ -36,4 +36,8 @@ jobs:
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: '{ "passcode": "${{ secrets.WEBHOOK_SECRET }}" }'
+          data: ${{ toJson({
+                  project_group: secrets.PROJECT_GROUP,
+                  discord_webhook: secrets.DISCORD_WEBHOOK,
+                  webhook_secret: secrets.WEBHOOK_SECRET
+                })}}
