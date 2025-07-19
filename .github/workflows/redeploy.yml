@@ -53,11 +53,12 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Send Request
-        uses: fjogeleit/http-request-action@v1
+      - name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v3
         with:
-          url: "https://fs-webhook.iecmu.com/hooks/nr"
-          method: "GET"
+          webhook_url: https://fs-webhook.iecmu.com/hooks/redeploy
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+          data: '{ "project_group": "${{ secrets.PROJECT_GROUP}}", "discord_webhook": "${{ secrets.DISCORD_WEBHOOK}}", "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}" }'
 
       - name: Discord notification (finish)
         env:
