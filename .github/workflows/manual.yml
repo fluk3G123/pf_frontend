@@ -36,4 +36,4 @@ jobs:
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: '{ "passcode": ${{ secrets.WEBHOOK_SECRET}}}'
+          data: '{ "passcode": "${{ secrets.WEBHOOK_SECRET }}" }'
