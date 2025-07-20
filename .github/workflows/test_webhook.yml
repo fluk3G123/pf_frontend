@@ -28,6 +28,15 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Runs a single command using the runners shell
+      - name: Discord notification (start)
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: github_server
+          DISCORD_AVATAR: https://picsum.photos/id/237/200/300
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has started GitHub Action."
+
       - name: Send greeting
         run: echo "Hello ${{ inputs.name }}"
 
