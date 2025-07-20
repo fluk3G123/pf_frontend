@@ -13,7 +13,7 @@ on:
   workflow_dispatch: # Allow manual triggering
 
 jobs:
-  push_to_registry:
+  redeploy:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     permissions:
@@ -65,6 +65,8 @@ jobs:
       - name: Discord notification (finish)
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: github_server
+          DISCORD_AVATAR: https://picsum.photos/id/237/200/300
         uses: Ilshidur/action-discord@master
         with:
           args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has finished GitHub Action."
