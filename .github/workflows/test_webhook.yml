@@ -36,4 +36,4 @@ jobs:
         with:
           webhook_url: https://fs-webhook.iecmu.com/hooks/test
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: '{ "project_group": "${{ secrets.PROJECT_GROUP}}", "discord_webhook": "${{ secrets.DISCORD_WEBHOOK}}", "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}" }'
+          data: '{ "project_group": "$PROJECT_GROUP", "discord_webhook": "${{ secrets.DISCORD_WEBHOOK}}", "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}" }'
