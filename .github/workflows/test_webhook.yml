@@ -22,7 +22,7 @@ jobs:
           DISCORD_AVATAR: https://picsum.photos/id/237/200/300
         uses: Ilshidur/action-discord@master
         with:
-          args: "The project {{ EVENT_PAYLOAD.repository.full_name }} has started GitHub Action."
+          args: "Test message from {{ EVENT_PAYLOAD.repository.full_name }}"
 
       - name: Invoke deployment hook
         uses: distributhor/workflow-webhook@v3
