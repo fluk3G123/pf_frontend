@@ -60,7 +60,7 @@ jobs:
         with:
           webhook_url: https://fs-webhook.iecmu.com/hooks/redeploy
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-          data: '{ "project_group": "${{ secrets.PROJECT_GROUP}}", "discord_webhook": "${{ secrets.DISCORD_WEBHOOK}}", "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}" }'
+          data: '{ "project_group": "${{ vars.PROJECT_GROUP}}", "discord_webhook": "${{ secrets.DISCORD_WEBHOOK}}", "webhook_secret": "${{ secrets.WEBHOOK_SECRET }}" }'
 
       - name: Discord notification (finish)
         env:
