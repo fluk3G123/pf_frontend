@@ -1,4 +1,11 @@
+# Preflight Frontend
+
 ## Setup
+
+- `pnpm install`
+- `npm run dev`
+
+## Note
 
 - Add "DOM" in "lib" in `tsconfig.node.json`
 
