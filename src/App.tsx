@@ -2,15 +2,28 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { type TodoItem } from "./types";
 import dayjs from "dayjs";
+
+type OwnerItem = {
+  id: string;
+  Name: string;
+  course_id: string;
+  section: string;
+};
+
 function App() {
   const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [owners, setOwners] = useState<OwnerItem[]>([]);
   const [inputText, setInputText] = useState("");
   const [mode, setMode] = useState<"ADD" | "EDIT">("ADD");
   const [curTodoId, setCurTodoId] = useState("");
 
   async function fetchData() {
-    const res = await axios.get<TodoItem[]>("api/todo");
-    setTodos(res.data);
+    const [todoRes, ownerRes] = await Promise.all([
+      axios.get<TodoItem[]>("/api/todo"),
+      axios.get<OwnerItem[]>("/api/todo/owner"),
+    ]);
+    setTodos(todoRes.data);
+    setOwners(ownerRes.data);
   }
 
   useEffect(() => {
@@ -23,25 +36,17 @@ function App() {
 
   function handleSubmit() {
     if (!inputText) return;
+    const payload = { todoText: inputText };
+
     if (mode === "ADD") {
       axios
-        .request({
-          url: "/api/todo",
-          method: "put",
-          data: { todoText: inputText },
-        })
-        .then(() => {
-          setInputText("");
-        })
+        .put("/api/todo", payload)
+        .then(() => setInputText(""))
         .then(fetchData)
         .catch((err) => alert(err));
     } else {
       axios
-        .request({
-          url: "/api/todo",
-          method: "patch",
-          data: { id: curTodoId, todoText: inputText },
-        })
+        .patch("/api/todo", { id: curTodoId, ...payload })
         .then(() => {
           setInputText("");
           setMode("ADD");
@@ -68,69 +73,100 @@ function App() {
     setInputText("");
     setCurTodoId("");
   }
+
+  function handleDeleteOwner(id: string) {
+    axios
+      .delete("/api/todo/owner", { data: { id } })
+      .then(fetchData)
+      .catch((err) => alert(err));
+  }
+
   return (
     <div className="container">
       <header>
-        <h1>Todo App</h1>
+        <h1 className="app-header">Todo App</h1>
       </header>
       <main>
-        <div style={{ display: "flex", alignItems: "start" }}>
-          <input
-            type="text"
-            onChange={handleChange}
-            value={inputText}
-            data-cy="input-text"
-          />
-          <button onClick={handleSubmit} data-cy="submit">
-            {mode === "ADD" ? "Submit" : "Update"}
-          </button>
-          {mode === "EDIT" && (
-            <button onClick={handleCancel} className="secondary">
-              Cancel
+        {/* Todo Section */}
+        <section className="todo-section">
+          <div className="todo-input-wrapper">
+            <input
+              type="text"
+              onChange={handleChange}
+              value={inputText}
+              className="todo-input"
+              placeholder="Add a new task"
+            />
+            <button onClick={handleSubmit} className="submit-btn">
+              {mode === "ADD" ? "Submit" : "Update"}
             </button>
-          )}
-        </div>
-        <div data-cy="todo-item-wrapper">
-          {todos.sort(compareDate).map((item, idx) => {
-            const { date, time } = formatDateTime(item.createdAt);
-            const text = item.todoText;
-            return (
-              <article
-                key={item.id}
-                style={{
-                  display: "flex",
-                  gap: "0.5rem",
-                }}
-              >
-                <div>({idx + 1})</div>
-                <div>📅{date}</div>
-                <div>⏰{time}</div>
-                <div data-cy="todo-item-text">📰{text}</div>
-                <div
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setMode("EDIT");
-                    setCurTodoId(item.id);
-                    setInputText(item.todoText);
-                  }}
-                  data-cy="todo-item-update"
-                >
-                  {curTodoId !== item.id ? "🖊️" : "✍🏻"}
-                </div>
+            {mode === "EDIT" && (
+              <button onClick={handleCancel} className="cancel-btn">
+                Cancel
+              </button>
+            )}
+          </div>
 
-                {mode === "ADD" && (
+          <h2 className="todo-title">📝 Todo List</h2>
+          <div className="todo-list">
+            {todos.sort(compareDate).map((item, idx) => {
+              const { date, time } = formatDateTime(item.createdAt);
+              const text = item.todoText;
+              return (
+                <article
+                  key={item.id}
+                  className="todo-item"
+                >
+                  <div className="todo-item-index">({idx + 1})</div>
+                  <div className="todo-item-date">📅 {date}</div>
+                  <div className="todo-item-time">⏰ {time}</div>
+                  <div className="todo-item-text">📰 {text}</div>
                   <div
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleDelete(item.id)}
-                    data-cy="todo-item-delete"
+                    className="todo-item-edit"
+                    onClick={() => {
+                      setMode("EDIT");
+                      setCurTodoId(item.id);
+                      setInputText(item.todoText);
+                    }}
                   >
-                    🗑️
+                    {curTodoId !== item.id ? "🖊️" : "✍🏻"}
                   </div>
-                )}
+
+                  {mode === "ADD" && (
+                    <div
+                      className="todo-item-delete"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      🗑️
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Owner Section */}
+        <section className="owner-section">
+          <h2 className="owner-title">👤 Owner Info</h2>
+          <div className="owner-list">
+            {owners.map((owner, idx) => (
+              <article key={owner.id} className="owner-item">
+                <div className="owner-item-index">({idx + 1})</div>
+                <div className="owner-item-id">ID: {owner.id}</div>
+                <div className="owner-item-name">NAME: {owner.Name}</div>
+                <div className="owner-item-course">COURSE: {owner.course_id}</div>
+                <div className="owner-item-section">SECTION: {owner.section}</div>
+                <div
+                  className="owner-item-delete"
+                  onClick={() => handleDeleteOwner(owner.id)}
+                >
+                  🗑️
+                </div>
               </article>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
